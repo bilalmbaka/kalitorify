@@ -292,7 +292,7 @@ check_ip() {
 
     # IP API URLs list
     local url_list=(
-        'https://ipinfo.io/'
+        'hhttps://ipinfo.io/'
         'https://api.myip.com/'
         'https://ifconfig.me'
     )
@@ -300,14 +300,25 @@ check_ip() {
     info "Check public IP address"
 
     for url in "${url_list[@]}"; do
-        local request="$(curl -s "$url")"
+        local request="$(curl -s -w "%{http_code}" "$url")"
         local response="$?"
 
         if [[ "$response" -ne 0 ]]; then
             continue
         fi
+        
+        local status="${request: -3}"
 
-        printf "%s\\n" "${request}"
+    		# Extract body (everything except last 3 chars)
+    		local body="${request::-3}"
+
+    		if [[ "$status" -ne 200 ]]; then
+    			printf "Failed with status code %s, trying another\n" "$status"
+        		continue
+    		fi
+
+    		printf "%s\n" "$body"
+
         break
     done
 }
