@@ -292,7 +292,7 @@ check_ip() {
 
     # IP API URLs list
     local url_list=(
-        'hhttps://ipinfo.io/'
+        'https://ipinfo.io/'
         'https://api.myip.com/'
         'https://ifconfig.me'
     )
